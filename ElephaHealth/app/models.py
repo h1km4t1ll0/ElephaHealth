@@ -19,3 +19,10 @@ class User(models.Model):
     height = models.FloatField()
     weight = models.FloatField()
     avg_heart_rate = models.IntegerField()
+
+
+class Analysis(models.Model):
+    person = models.ForeignKey(User, on_delete=models.CASCADE)
+    hr_before = models.IntegerField()
+    hr_after = models.IntegerField()
+    condition = models.CharField(max_length=30)
