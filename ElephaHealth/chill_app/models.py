@@ -1,14 +1,16 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 from phonenumber_field.modelfields import PhoneNumberField
 
 
-class User(models.Model):
+class User(AbstractUser):
     first_name = models.CharField(max_length=30)  # name
     last_name = models.CharField(max_length=30)  # surname
     phone_number = PhoneNumberField()
     email = models.EmailField(max_length=254)
+    password = models.CharField(max_length=30)
     company = models.CharField(max_length=30)
-    dob = models.DateField()  # date of birth
+    date_of_birth = models.DateField()  # date of birth
 
     GENDER_CHOICES = (
         ('M', 'Male'),
