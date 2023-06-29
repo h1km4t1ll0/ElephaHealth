@@ -22,6 +22,9 @@ class User(AbstractUser):
     weight = models.FloatField()
     avg_heart_rate = models.IntegerField()
 
+    def __str__(self):
+        return self.user.username
+
 
 # Исследование состояния пользователя
 class Analysis(models.Model):
