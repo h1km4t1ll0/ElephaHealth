@@ -5,7 +5,6 @@ from .chill_app.models import User
 
 class NewUserForm (UserCreationForm):
     email = forms.EmailField(required=True)
-    password = forms.CharField(required=True)
 
     class Meta:
         model = User
@@ -15,7 +14,6 @@ class NewUserForm (UserCreationForm):
     def save(self, commit=True):
         user = super(NewUserForm, self).save(commit=False)
         user.email = self.cleaned_data['email']
-        user.password = self.cleaned_data['password']
         if commit:
             user.save()
         return user
