@@ -25,14 +25,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'phonenumbers',
-    'ElephaHealth',
+    'ElephaHealth.chill_app',
     'djoser',
     'rest_framework',
     'rest_framework_simplejwt',
 ]
 
 # User
-# AUTH_USER_MODEL = 'ElephaHealth.User'
+AUTH_USER_MODEL = 'chill_app.User'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -50,7 +50,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'ElephaHealth.urls'
+ROOT_URLCONF = 'ElephaHealth.chill_app.urls'
 
 TEMPLATES = [
     {

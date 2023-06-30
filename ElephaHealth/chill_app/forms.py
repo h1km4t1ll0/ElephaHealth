@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .chill_app.models import User
+from ElephaHealth.chill_app.models import User
 
 
 class NewUserForm (UserCreationForm):
