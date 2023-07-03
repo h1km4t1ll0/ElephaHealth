@@ -37,8 +37,8 @@ class User(AbstractUser):
     weight = models.FloatField()
     avg_heart_rate = models.IntegerField()
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'first_name', 'last_name', 'date_of_birth', 'company', 'phone_number']
+    REQUIRED_FIELDS = ['email', 'first_name', 'last_name', 'date_of_birth', 'company', 'phone_number', 'gender',
+                       'height', 'weight', 'avg_heart_rate']
 
     def __str__(self):
         return self.username
