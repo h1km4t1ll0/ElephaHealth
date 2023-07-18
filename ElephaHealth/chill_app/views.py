@@ -1,9 +1,18 @@
-from rest_framework.generics import (ListCreateAPIView,RetrieveUpdateDestroyAPIView,)
+import requests
+from rest_framework.generics import (ListCreateAPIView, RetrieveUpdateDestroyAPIView,)
 from django.http import HttpResponse, HttpRequest
+from django.views.generic import ListView, DetailView
+
 from rest_framework.permissions import IsAuthenticated
-from .models import User
+from .models import User, Analysis
 from .permissions import IsOwnerProfileOrReadOnly
-from .serializers import userProfileSerializer
+from .serializers import UserProfileSerializer, UserResearchSerializer
+
+
+def __init__(self, token: str, url: str):
+    self.session = requests.Session()
+    self.url = url
+    self.session.headers['Authorization'] = 'Bearer ' + token
 
 
 def homepage(request: HttpRequest) -> HttpResponse:
@@ -12,47 +21,26 @@ def homepage(request: HttpRequest) -> HttpResponse:
 
 
 class UserProfileListCreateView(ListCreateAPIView):
-    queryset=User.objects.all()
-    serializer_class=userProfileSerializer
-    permission_classes=[IsAuthenticated]
+    queryset = User.objects.all()
+    serializer_class = UserProfileSerializer
+    permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
-        user=self.request.user
+        user = self.request.user
         serializer.save(user=user)
 
 
-class userProfileDetailView(RetrieveUpdateDestroyAPIView):
-    queryset=User.objects.all()
-    serializer_class=userProfileSerializer
-    permission_classes=[IsOwnerProfileOrReadOnly,IsAuthenticated]
+class UserProfileDetailView(RetrieveUpdateDestroyAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserProfileSerializer
+    permission_classes = [IsOwnerProfileOrReadOnly, IsAuthenticated]
 
-# def register_request(request: HttpRequest) -> HttpResponse:
-#     if request.method == 'POST':
-#         form = NewUserForm(request.POST)
-#         if form.is_valid():
-#             user = form.save()
-#             login(request, user)
-#             messages.success(request, "Registration successful! Welcome!")
-#             return redirect("homepage")
-#         messages.error(request, "Invalid information. Unsuccessful registration.")
-#     form = NewUserForm()
-#     return render(request=request, template_name="register.html", context={"register_form": form})
-#
-#
-# def login_request(request: HttpRequest) -> HttpResponse:
-#     if request.method == "POST":
-#         form = AuthenticationForm(request, data=request.POST)
-#         if form.is_valid():
-#             email = form.cleaned_data.get('email')
-#             password = form.cleaned_data.get('password')
-#             user = authenticate(username=email, password=password)
-#             if user is not None:
-#                 login(request, user)
-#                 messages.info(request, f"You are now logged in as {email}.")
-#                 return redirect("homepage")
-#             else:
-#                 messages.error(request, "Invalid username or password.")
-#         else:
-#             messages.error(request, "Invalid username or password.")
-#     form = AuthenticationForm()
-#     return render(request=request, template_name="login.html", context={"login_form": form})
+
+class GetProfileStatistics(ListCreateAPIView):
+    queryset = Analysis.objects.all()
+    serializer_class = UserResearchSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        serializer.save(user=user)
