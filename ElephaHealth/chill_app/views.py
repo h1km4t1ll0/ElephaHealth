@@ -6,7 +6,7 @@ from django.views.generic import ListView, DetailView
 from rest_framework.permissions import IsAuthenticated
 from .models import User, Analysis
 from .permissions import IsOwnerProfileOrReadOnly
-from .serializers import userProfileSerializer
+from .serializers import UserProfileSerializer, UserResearchSerializer
 
 
 def __init__(self, token: str, url: str):
@@ -21,22 +21,26 @@ def homepage(request: HttpRequest) -> HttpResponse:
 
 
 class UserProfileListCreateView(ListCreateAPIView):
-    queryset=User.objects.all()
-    serializer_class=userProfileSerializer
-    permission_classes=[IsAuthenticated]
+    queryset = User.objects.all()
+    serializer_class = UserProfileSerializer
+    permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
-        user=self.request.user
+        user = self.request.user
         serializer.save(user=user)
 
 
 class UserProfileDetailView(RetrieveUpdateDestroyAPIView):
-    queryset=User.objects.all()
-    serializer_class=userProfileSerializer
-    permission_classes=[IsOwnerProfileOrReadOnly, IsAuthenticated]
+    queryset = User.objects.all()
+    serializer_class = UserProfileSerializer
+    permission_classes = [IsOwnerProfileOrReadOnly, IsAuthenticated]
 
 
-def get_profile_statistics(request: HttpRequest) -> list:
-    if request.method == "Get":
-        statistics = Analysis.objects.filter(person=?who?)
-        return list(statistics)
+class GetProfileStatistics(ListCreateAPIView):
+    queryset = Analysis.objects.all()
+    serializer_class = UserResearchSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        serializer.save(user=user)
