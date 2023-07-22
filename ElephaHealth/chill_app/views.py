@@ -1,6 +1,8 @@
 import requests
 from rest_framework.generics import (ListCreateAPIView, RetrieveUpdateDestroyAPIView,)
 from django.http import HttpResponse, HttpRequest
+from rest_framework import viewsets
+from rest_framework.response import Response
 from django.views.generic import ListView, DetailView
 
 from rest_framework.permissions import IsAuthenticated
@@ -36,11 +38,14 @@ class UserProfileDetailView(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsOwnerProfileOrReadOnly, IsAuthenticated]
 
 
-class GetProfileStatistics(ListCreateAPIView):
-    queryset = Analysis.objects.all()
+class GetProfileStatistics(viewsets.ModelViewSet):
     serializer_class = UserResearchSerializer
     permission_classes = [IsAuthenticated]
 
-    def perform_create(self, serializer):
-        user = self.request.user
-        serializer.save(user=user)
+    def retrieve(self, request, *args, **kwargs):
+        data = self.request.user.analysis.all()
+        return Response({'data': data})
+
+    def list(self, request, *args, **kwargs):
+        data = self.request.user.analysis.all()
+        return Response({'data': data})

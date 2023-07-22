@@ -9,5 +9,5 @@ urlpatterns = [
     path('auth/', include('djoser.urls.jwt')),
     path('profile/<int:pk>/', views.UserProfileDetailView.as_view(), name="profile"),
     path("all-profiles/", views.UserProfileListCreateView.as_view(), name="all-profiles"),
-    path("research/", views.GetProfileStatistics.as_view(), name="research")
+    path("research/", views.GetProfileStatistics.as_view({'get': 'list'}), name="research")
 ]
