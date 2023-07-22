@@ -7,7 +7,8 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.jwt')),
-    path('profile/<int:pk>/', views.UserProfileDetailView.as_view(), name="profile"),
+    path('profile/', views.UserProfileDetailView.as_view(), name="profile"),
+    path('profile/<int:pk>/', views.PkUserProfileDetailView.as_view(), name="pk_profile"),
     path("all-profiles/", views.UserProfileListCreateView.as_view(), name="all-profiles"),
-    path("research/", views.GetProfileStatistics.as_view(), name="research")
+    path("research/", views.GetProfileStatistics.as_view({'get': 'list'}), name="research")
 ]

@@ -37,7 +37,6 @@ class User(AbstractUser):
     weight = models.FloatField()
     avg_heart_rate = models.IntegerField()
 
-
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = [
         'username',
