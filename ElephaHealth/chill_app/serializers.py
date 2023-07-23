@@ -9,6 +9,10 @@ class UserProfileSerializer(serializers.ModelSerializer):
         model = User
         fields = '__all__'
 
+    def get_active_user_data(self):
+        items = Analysis.objects.filter(person=self.user)
+        return items
+
 
 class UserResearchSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(read_only=True)
