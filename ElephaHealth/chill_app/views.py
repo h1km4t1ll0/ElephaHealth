@@ -32,7 +32,7 @@ class UserProfileListCreateView(ListCreateAPIView):
         serializer.save(user=user)
 
 
-class PkUserProfileDetailView(RetrieveUpdateDestroyAPIView):
+class AdminUserProfileDetailView(RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserProfileSerializer
     permission_classes = [IsAdminUser]
