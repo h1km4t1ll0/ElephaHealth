@@ -63,3 +63,8 @@ class Analysis(models.Model):
     hr_before = models.IntegerField()
     hr_after = models.IntegerField()
     condition = models.CharField(max_length=30)
+
+
+class Audio(models.Model):
+    filename = models.CharField(max_length=30)
+    link = models.URLField()
