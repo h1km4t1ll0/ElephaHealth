@@ -1,7 +1,8 @@
 import requests
+import os
+
 from rest_framework.generics import (ListCreateAPIView, RetrieveUpdateDestroyAPIView,)
-from django.http import HttpResponse, HttpRequest
-from django.views.generic import ListView, DetailView
+from django.http import HttpResponse, HttpRequest, FileResponse, Http404
 
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework import viewsets
@@ -22,14 +23,13 @@ def homepage(request: HttpRequest) -> HttpResponse:
     return HttpResponse(html)
 
 
-class UserProfileListCreateView(ListCreateAPIView):
-    queryset = User.objects.all()
+class UserProfileDetailView(ListCreateAPIView):
     serializer_class = UserProfileSerializer
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsOwnerProfileOrReadOnly, IsAuthenticated]
 
-    def perform_create(self, serializer):
-        user = self.request.user
-        serializer.save(user=user)
+    def get_queryset(self) -> Response:
+        data = User.objects.filter(pk=self.request.user.pk)
+        return data
 
 
 class AdminUserProfileDetailView(RetrieveUpdateDestroyAPIView):
@@ -38,23 +38,26 @@ class AdminUserProfileDetailView(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAdminUser]
 
 
-class UserProfileDetailView(ListCreateAPIView):
-    serializer_class = UserProfileSerializer
-    permission_classes = [IsOwnerProfileOrReadOnly, IsAuthenticated]
-
-    def get_queryset(self):
-        data = User.objects.filter(pk=self.request.user.pk)
-        return data
-
-
 class GetProfileStatistics(viewsets.ModelViewSet):
     serializer_class = UserResearchSerializer
     permission_classes = [IsOwnerProfileOrReadOnly, IsAuthenticated]
 
-    def retrieve(self, request, *args, **kwargs):
+    def retrieve(self, request, *args, **kwargs) -> Response:
         data = self.request.user.analysis.all()
         return Response({'data': data})
 
-    def list(self, request, *args, **kwargs):
+    def list(self, request, *args, **kwargs) -> Response:
         data = self.request.user.analysis.all()
         return Response({'data': data})
+
+
+class GetFile(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+
+    def list(self, request, *args, **kwargs):
+        filename = kwargs['filename']
+        file_path = f'ElephaHealth/chill_app/sound_matrices/{filename}'
+        if os.path.exists(file_path):
+            response = FileResponse(open(file_path, 'rb'))
+            return response
+        raise Http404
