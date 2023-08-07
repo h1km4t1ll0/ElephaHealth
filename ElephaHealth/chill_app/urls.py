@@ -10,5 +10,5 @@ urlpatterns = [
     path('profile/', views.UserProfileDetailView.as_view(), name="profile"),
     path('profile/<int:pk>/', views.AdminUserProfileDetailView.as_view(), name="pk_profile"),
     path("research/", views.GetProfileStatistics.as_view({'get': 'list'}), name="research"),
-    path("getfile/<str:filename>/", views.GetFile.as_view({'get': 'list'}), name="getfile"),
+    # path("getfile/<str:filename>/", views.GetFile.as_view({'get': 'list'}), name="getfile"),
 ]

@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 from datetime import timedelta
 
@@ -12,14 +13,20 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-y&4+r^a9^g!175fgk^bm9a1u9q+5lszj11i6g-_rkdn0_67*27'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False if os.environ.get("DEBUG", '') in ["False", False] else True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["elepha.hikmatillo.ru", '0.0.0.0', '192.168.0.28', '127.0.0.1', '31.173.240.248', 'localhost']
+if not DEBUG:
+    CSRF_TRUSTED_ORIGINS = ['https://elepha.hikmatillo.ru', 'https://elepha.di.media']
+
+if os.environ.get("SERVER", '') in ["True", True]:
+    CSRF_TRUSTED_ORIGINS = ['https://elepha.hikmatillo.ru', 'https://elepha.di.media']
 
 # Application definition
 
 INSTALLED_APPS = [
     'jazzmin',
+    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -47,7 +54,13 @@ REST_FRAMEWORK = {
     ),
 }
 
+CORS_ALLOWED_ORIGINS = [
+    'http://127.0.0.1',
+]
+
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -82,12 +95,24 @@ WSGI_APPLICATION = 'ElephaHealth.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
+if os.environ.get("SERVER", '') in ["True", True]:
+    DATABASES = {
+        'default': {
+             'ENGINE': 'django.db.backends.postgresql',
+             'NAME': os.environ.get("TABLE_NAME", ''),
+             'USER': os.environ.get('DATABASE_USER', ''),
+             'PASSWORD': os.environ.get('DATABASE_PASSWORD', ''),
+             'HOST':  os.environ.get('DATABASE_URL', ''),
+             'PORT': os.environ.get("DATABASE_PORT", ''),
+         }
+    }
 
 
 # Password validation
@@ -112,9 +137,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Etc/GMT-5'
 
 USE_I18N = True
 
@@ -125,6 +150,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = '/srv/telegram_admin/static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
