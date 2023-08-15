@@ -4,7 +4,6 @@ from django.urls import reverse
 
 
 class userProfileTestCase(APITestCase):
-    profile_list_url = reverse('all-profiles')
 
     def setUp(self):
         # создайте нового пользователя, отправив запрос к конечной точке djoser
